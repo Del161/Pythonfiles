@@ -25,7 +25,7 @@ def calculate_weight(list_lines):
             atoms_list.append(lines[77:78])
     for atoms in atoms_list:
         total_weight = total_weight + atoms_dict[atoms]
-    print(total_weight)
+    return total_weight
 
 def main() -> None:
     # get the given arguments
@@ -48,7 +48,7 @@ def main() -> None:
     #    output_name = arguments[2]
     
     list_lines = open_file(input_name)
-    calculate_weight(list_lines)
+    total_weight = calculate_weight(list_lines)
 
 if __name__ == "__main__":
     main()
