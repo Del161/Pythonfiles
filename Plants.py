@@ -28,9 +28,6 @@ for species in list_species:
     width_average = width_total / len(all_width)
     
     #print resultaten
-    results.append(species, "average sepal width is: ", round(width_average, 3))
+    print(species, "average sepal width is: ", round(width_average, 3))
 
-with open(outputnaam,"w") as writefile:
-    for regels in results:
-        writefile.write(regels)
-        writefile.write("\n") 
+
