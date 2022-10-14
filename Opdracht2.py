@@ -27,6 +27,13 @@ def calculate_weight(list_lines):
         total_weight = total_weight + atoms_dict[atoms]
     return total_weight
 
+def write_results(output_name, total_weight) -> None:
+    # open given output file
+    with open(output_name, "w") as writefile:
+        # loop items and write it to the file
+        writefile.write("The Weight is around: ")
+        writefile.write(str(total_weight))
+
 def main() -> None:
     # get the given arguments
     arguments = sys.argv
@@ -41,14 +48,15 @@ def main() -> None:
         input_name = arguments[1]
 
     # check if it has the file output argument
-    #if len(arguments) < 3:
-    #    raise Exception("No output name given")
-    #else:
-    #    # get the argument and set the variable
-    #    output_name = arguments[2]
+    if len(arguments) < 3:
+        raise Exception("No output name given")
+    else:
+        # get the argument and set the variable
+        output_name = arguments[2]
     
     list_lines = open_file(input_name)
     total_weight = calculate_weight(list_lines)
+    write_results(output_name, total_weight)
 
 if __name__ == "__main__":
     main()
