@@ -15,6 +15,17 @@ amino_acids_dict = {
      "UNK" : "*"
      }
 
+amino_acids_weight_dict = {
+"A"	: 89.1,  "R" : 174.2, "N" : 132.1,
+"D"	: 133.1, "C" : 121.2, "E" : 147.1,
+"Q"	: 146.2, "G" : 75.1,  "H" : 155.2, 
+"I"	: 131.2, "L" : 131.2, "K" : 146.2,
+"M"	: 149.2, "F" : 165.2, "P" : 115.1,
+"S"	: 105.1, "T" : 119.1, "W" : 204.2,
+"Y"	: 181.2, "V" : 117.1, "*" : 110
+#unkown aminoacid gets the avarage weight of a aminoacid which is 110
+}
+
 def open_file(input_name):
         # read pdb file
     with open(input_name, "r") as file:
@@ -31,7 +42,7 @@ def calculate_weight(list_lines):
         if lines.startswith("ATOM"):
             atoms_list.append(lines[77:78])
     for atoms in atoms_list:
-        total_weight = round(total_weight + atoms_dict[atoms])
+        total_weight = round(total_weight + atoms_dict[atoms], 2)
     return total_weight
 
 def amino_acids(list_lines):
@@ -46,25 +57,38 @@ def amino_acids(list_lines):
             for aminoacids in amino_acids_list:
                 amino_acid_string += amino_acids_dict[aminoacids]
 
-    #devide aminoacids in lines of 70
+    #devide aminoacids in solid lines of 70
     for devided_item in range(0, len(amino_acid_string), 70):
         aminoacids_end += "".join(amino_acid_string[devided_item: devided_item + 70])
         aminoacids_end += "\n"
-    return(aminoacids_end)
+    return aminoacids_end, amino_acid_string 
 
-def write_results(output_name, total_weight, aminoacids_end) -> None:
+def calculate_aminoacid_weight(amino_acid_string):
+    #pre define vars
+    aminoacid_weight = 0
+    weight_loss = (len(amino_acid_string) - 2) * 18.01
+    for letter in amino_acid_string:
+        aminoacid_weight = round(aminoacid_weight + amino_acids_weight_dict[letter])
+    aminoacid_weight = aminoacid_weight - weight_loss
+    return aminoacid_weight
+
+def write_results(output_name, total_weight, aminoacids_end, aminoacid_weight):
     #create given output filename
     with open(output_name, "w") as writefile:
         # loop items and write it to the file
-        writefile.write("The Weight is around: ")
+        writefile.write("The weight of the atoms is around:      ")
         writefile.write(str(total_weight))
+        writefile.write("\n")
+        writefile.write("The weight of the aminoacids is around: ")
+        writefile.write(str(aminoacid_weight))
         writefile.write("\n \n")
+        writefile.write("The aminoacid sequence \n")
         writefile.write(aminoacids_end)
 
-def main() -> None:
+def main():
     # get the given arguments
     arguments = sys.argv
-    # pre devine variables
+    # pre defined variables
     input_name = ""
     output_name = ""
 
@@ -83,8 +107,9 @@ def main() -> None:
     
     list_lines = open_file(input_name)
     total_weight = calculate_weight(list_lines)
-    aminoacids_end = amino_acids(list_lines)
-    write_results(output_name, total_weight, aminoacids_end)
+    aminoacids_end, amino_acid_string  = amino_acids(list_lines)
+    aminoacid_weight = calculate_aminoacid_weight(amino_acid_string)
+    write_results(output_name, total_weight, aminoacids_end, aminoacid_weight)
 
 if __name__ == "__main__":
     main()
