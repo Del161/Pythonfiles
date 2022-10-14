@@ -11,7 +11,7 @@ amino_acids_dict = {
      'CYS': 'C', 'ASP': 'D', 'SER': 'S', 'GLN': 'Q', 'LYS': 'K',
      'ILE': 'I', 'PRO': 'P', 'THR': 'T', 'PHE': 'F', 'ASN': 'N', 
      'GLY': 'G', 'HIS': 'H', 'LEU': 'L', 'ARG': 'R', 'TRP': 'W', 
-     'ALA': 'A', 'VAL':'V', 'GLU': 'E', 'TYR': 'Y', 'MET': 'M',
+     'ALA': 'A', 'VAL': 'V', 'GLU': 'E', 'TYR': 'Y', 'MET': 'M',
      "UNK" : "*"
      }
 
@@ -67,8 +67,10 @@ def calculate_aminoacid_weight(amino_acid_string):
     #pre define vars
     aminoacid_weight = 0
     weight_loss = (len(amino_acid_string) - 2) * 18.01
+    #use the letters in the aminoacid string as a key for the dict with weights.
     for letter in amino_acid_string:
         aminoacid_weight = round(aminoacid_weight + amino_acids_weight_dict[letter])
+    #remove the water weight
     aminoacid_weight = aminoacid_weight - weight_loss
     return aminoacid_weight
 
