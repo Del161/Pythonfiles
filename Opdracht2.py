@@ -25,7 +25,7 @@ amino_acids_weight_dict = {
 #unkown aminoacid gets the avarage weight of an aminoacid which is 110
 }
 
-hydrophilicity_dict = {
+hydro_dict = {
 "I" :	4.5,
 "V" :	4.2,
 "L" :	3.8,
@@ -45,7 +45,8 @@ hydrophilicity_dict = {
 "D" :	-3.5,
 "N" :	-3.5,
 "K" :	-3.9,
-"R" :	-4.5
+"R" :	-4.5,
+"*" :   -0.49 #average of all aminoacids
 }
 
 def open_file(input_name, comparison_name):
@@ -163,6 +164,24 @@ def compare_files(comparison_lines, aminoacids_end):
 
     return endresult_compared_list
     
+def calculate_hydrophilicity(aminoacids_end, sheet_sequence, helix_sequence):
+    #p-p-p-predefined valueees
+    sheet_hydro_value = 0
+    helix_hydro_value = 0
+    totalamino_hydro_value = 0
+
+    #calculate sheet hydrophilicity value
+    for char in sheet_sequence:
+        sheet_hydro_value += hydro_dict[char]
+
+    #calculate aminoacid hydrophilicity value
+    for char in aminoacids_end:
+        totalamino_hydro_value += hydro_dict[char]   
+
+    #calculate helix hydrophilicity value
+    for char in helix_sequence:
+        helix_hydro_value += hydro_dict[char]
+
 
 
 def write_results(output_name, total_weight, aminoacid_weight, aminoacids_end, sheet_sequence, helix_sequence, endresult_compared_list ):
@@ -223,6 +242,7 @@ def main():
     aminoacid_weight = calculate_aminoacid_weight(amino_acid_string)
     helix_sequence, sheet_sequence = get_helix_sheet_strings(amino_acid_string, list_lines)
     endresult_compared_list = compare_files(comparison_lines, aminoacids_end)
+    hydrophilicity_results = calculate_hydrophilicity(aminoacids_end, sheet_sequence, helix_sequence)
     write_results(output_name, total_weight, aminoacid_weight, aminoacids_end, sheet_sequence, helix_sequence, endresult_compared_list)
     print("information and results were logged in ", output_name)
 
