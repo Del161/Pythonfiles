@@ -25,15 +25,20 @@ amino_acids_weight_dict = {
 #unkown aminoacid gets the avarage weight of an aminoacid which is 110
 }
 
-def open_file(input_name):
+def open_file(input_name, comparison_name):
         # read pdb file
     with open(input_name, "r") as file:
         # set file lines to variable
         list_lines = list(file.readlines())
-    return list_lines
+
+    #read comparison fasta file
+    with open(comparison_name, "r") as file2:
+        # set file lines to variable
+        comparison_lines = list(file2.readlines())
+    return list_lines, comparison_lines
 
 def calculate_weight(list_lines):
-    #bereken het gewicht van de atomen 
+    #calculates the atoms weight
     atoms_list = []
     total_weight = 0 
 
@@ -44,6 +49,7 @@ def calculate_weight(list_lines):
         total_weight = round(total_weight + atoms_dict[atoms], 2)
     return total_weight
 
+#retrieves helix and sheet aminoacids from file
 def get_helix_sheet_strings(amino_acid_string, list_lines):
     #more predefined vars
     helix_residue_start = ""
@@ -69,6 +75,7 @@ def get_helix_sheet_strings(amino_acid_string, list_lines):
             sheet_amino_acids = amino_acid_string[int(sheet_residue_start[0]): int(sheet_residue_end[0])]
             sheet_sequence += sheet_amino_acids
 
+#retrieves all aminoacids from the file
 def amino_acids(list_lines):
     #pre defined variables whoo
     amino_acid_string = ""
@@ -87,6 +94,7 @@ def amino_acids(list_lines):
         aminoacids_end += "\n"
     return aminoacids_end, amino_acid_string 
 
+#calculates aminoacid weight
 def calculate_aminoacid_weight(amino_acid_string):
     #pre define vars
     aminoacid_weight = 0
@@ -98,7 +106,14 @@ def calculate_aminoacid_weight(amino_acid_string):
     aminoacid_weight = aminoacid_weight - weight_loss
     return aminoacid_weight
 
+def compare_files(comparison_lines, aminoacids_end):
+    for lines in comparison_lines:
+        lines = lines.replace("\n", "")
+        print(lines)
+
+
 def write_results(output_name, total_weight, aminoacids_end, aminoacid_weight):
+    #write the results to a file
     #create given output filename
     with open(output_name, "w") as writefile:
         # loop items and write it to the file
@@ -117,26 +132,36 @@ def main():
     # pre defined variables
     input_name = ""
     output_name = ""
+    comparison_name = ""
 
     if len(arguments) < 2:
-        raise Exception("No input name given")
+        raise Exception("No input filename given")
     else:
         # get the argument and set the variable
         input_name = arguments[1]
-
-    # check if it has the file output argument
+    
+    # check if it has the comparison file argument
     if len(arguments) < 3:
-        raise Exception("No output name given")
+        raise Exception("No comparison filename given")
     else:
         # get the argument and set the variable
-        output_name = arguments[2]
+        comparison_name = arguments[2]
+
+    # check if it has the file output argument
+    if len(arguments) < 4:
+        raise Exception("No output filename given")
+    else:
+        # get the argument and set the variable
+        output_name = arguments[3]
     
-    list_lines = open_file(input_name)
+    list_lines, comparison_lines = open_file(input_name, comparison_name)
     total_weight = calculate_weight(list_lines)
     aminoacids_end, amino_acid_string  = amino_acids(list_lines)
     aminoacid_weight = calculate_aminoacid_weight(amino_acid_string)
     get_helix_sheet_strings(amino_acid_string, list_lines)
+    compare_files(comparison_lines, aminoacids_end)
     write_results(output_name, total_weight, aminoacids_end, aminoacid_weight)
+    print("information logged in ", output_name)
 
 if __name__ == "__main__":
     main()
