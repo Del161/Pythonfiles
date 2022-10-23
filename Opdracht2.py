@@ -1,6 +1,5 @@
 import sys
 
-placeholder_filename = "./5uak.pdb"
 atoms_dict = {
     "C" : 12.01,
     "N" : 14.01,
@@ -23,7 +22,7 @@ amino_acids_weight_dict = {
 "M"	: 149.2, "F" : 165.2, "P" : 115.1,
 "S"	: 105.1, "T" : 119.1, "W" : 204.2,
 "Y"	: 181.2, "V" : 117.1, "*" : 110
-#unkown aminoacid gets the avarage weight of a aminoacid which is 110
+#unkown aminoacid gets the avarage weight of an aminoacid which is 110
 }
 
 def open_file(input_name):
@@ -44,6 +43,31 @@ def calculate_weight(list_lines):
     for atoms in atoms_list:
         total_weight = round(total_weight + atoms_dict[atoms], 2)
     return total_weight
+
+def get_helix_sheet_strings(amino_acid_string, list_lines):
+    #more predefined vars
+    helix_residue_start = ""
+    helix_residue_end = ""
+    helix_sequence = ""
+    #retrieve helix information
+    for lines in list_lines:
+        if lines.startswith("HELIX"):
+            helix_residue_start = lines[22:25].split()
+            helix_residue_end = lines[34:37].split()
+            helix_amino_acids = amino_acid_string[int(helix_residue_start[0]): int(helix_residue_end[0])]
+            helix_sequence += helix_amino_acids
+
+    #more predefined vars
+    sheet_residue_start = ""
+    sheet_residue_end = ""
+    sheet_sequence = ""
+    #retrieve sheet information
+    for lines in list_lines:
+        if lines.startswith("SHEET"):
+            sheet_residue_start = lines[23:26].split()
+            sheet_residue_end = lines[34:37].split()
+            sheet_amino_acids = amino_acid_string[int(sheet_residue_start[0]): int(sheet_residue_end[0])]
+            sheet_sequence += sheet_amino_acids
 
 def amino_acids(list_lines):
     #pre defined variables whoo
@@ -111,6 +135,7 @@ def main():
     total_weight = calculate_weight(list_lines)
     aminoacids_end, amino_acid_string  = amino_acids(list_lines)
     aminoacid_weight = calculate_aminoacid_weight(amino_acid_string)
+    get_helix_sheet_strings(amino_acid_string, list_lines)
     write_results(output_name, total_weight, aminoacids_end, aminoacid_weight)
 
 if __name__ == "__main__":
