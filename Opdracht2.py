@@ -1,5 +1,11 @@
 import sys
 
+#how to use
+# use commandline arguments in this fashion
+# replace inputname with the pdb files name, and inputname1 with the fasta filename
+# python3 script2_2.py inputname.pdb inputname2.fasta outputname.txt
+# file made on python version 3.10.7
+
 atoms_dict = {
     "C" : 12.01,
     "N" : 14.01,
@@ -136,15 +142,20 @@ def compare_files(comparison_lines, aminoacids_end):
     comparison_list = []
     aminoacids_list = []
     endresult_compared_list = ""
+    comparison_string = ""
     rownumber1 = 0
     rownumber = 0
 
-    #remove newlines from fasta sequence, check if its not header
+    #remove newlines from fasta sequence, check if its not header, turn it into string to prevent issues with length
     for lines in comparison_lines:
         if not lines.startswith(">"):
-            lines = lines.replace("\n", "")
-            comparison_list.append("fasta sequence line: "+ str(rownumber) + " :"+ lines)
-            rownumber += 1
+            lines = lines.strip()
+            comparison_string += lines
+
+    #devide in rows of 70 for neat comparison
+    for rows in range(0, len(comparison_string), 70):
+        comparison_list.append("Fasta sequence line: " + str(rownumber)+ " :"+ comparison_string[rows: rows + 70])
+        rownumber += 1
 
     #remove newlines from pdb sequence
     aminoacids_string = aminoacids_end.replace("\n", "")
@@ -154,9 +165,17 @@ def compare_files(comparison_lines, aminoacids_end):
         rownumber1 += 1
 
     #check which list is shortest to prevent index errors
-    if len(aminoacids_list) > len(comparison_list):
+    if len(aminoacids_list) == len(comparison_list):
+        length_list = len(comparison_list)       
+        print("lists same length, no issues")
+    elif len(aminoacids_list) > len(comparison_list):
         length_list = len(comparison_list)
-    else: length_list = len(aminoacids_list)
+        print("PDB sequence is longer, only comparing for length of shorter FASTA file")
+        print("length PDB sequence: ", len(aminoacids_list), "length FASTA sequence", len(comparison_list))
+    else: 
+        length_list = len(aminoacids_list)
+        print("FASTA sequence is longer, only comparing for length of shorter PDB file")
+        print("length PDB sequence: ", len(aminoacids_list), "length FASTA sequence", len(comparison_list))
 
     #save the formatted lines to a list
     for linecount in range(length_list):
@@ -169,44 +188,57 @@ def calculate_hydrophilicity(aminoacids_end, sheet_sequence, helix_sequence):
     sheet_hydro_value = 0
     helix_hydro_value = 0
     totalamino_hydro_value = 0
+    aminoacidstring = aminoacids_end.replace("\n", "")
 
     #calculate sheet hydrophilicity value
     for char in sheet_sequence:
         sheet_hydro_value += hydro_dict[char]
 
     #calculate aminoacid hydrophilicity value
-    for char in aminoacids_end:
+    for char in aminoacidstring:
         totalamino_hydro_value += hydro_dict[char]   
 
     #calculate helix hydrophilicity value
     for char in helix_sequence:
         helix_hydro_value += hydro_dict[char]
 
+    #calculate averages
+    helix_hydro_value = helix_hydro_value / len(helix_sequence)
+    sheet_hydro_value = sheet_hydro_value / len(sheet_sequence)
+    totalamino_hydro_value = totalamino_hydro_value / len(aminoacidstring)
+
+    #put them in a list
+    hydro_results_list = [sheet_hydro_value, helix_hydro_value, totalamino_hydro_value]
+    return hydro_results_list
 
 
-def write_results(output_name, total_weight, aminoacid_weight, aminoacids_end, sheet_sequence, helix_sequence, endresult_compared_list ):
+
+def write_results(output_name, total_weight, aminoacid_weight, aminoacids_end, sheet_sequence, helix_sequence, endresult_compared_list, hydro_results_list ):
     #write the weight results to a file
     #create given output filename
     with open(output_name, "w") as writefile:
         # loop items and write it to the file
-        writefile.write("The weight of the atoms is around:      ")
-        writefile.write(str(total_weight))
-        writefile.write("\n")
-        writefile.write("The weight of the aminoacids is around: ")
-        writefile.write(str(aminoacid_weight))
-        writefile.write("\n \n")
+        writefile.write("The weight of the atoms is around: "+ str(total_weight) + "\n")
+        writefile.write("The weight of the aminoacids is around: "+ str(aminoacid_weight) + "\n \n")
+
+        #write hydrophilicity to file
+        writefile.write("average hydrophilicity of aminoacid sequence is: " + str(hydro_results_list[2]) + "\n")
+        writefile.write("average hydrophilicity of helix sequence is: " + str(hydro_results_list[1]) + "\n")
+        writefile.write("average hydrophilicity of sheet sequence is: " + str(hydro_results_list[0]) + "\n \n")
 
         #write the various sequences to file
         writefile.write("The aminoacid sequence: \n")
-        writefile.write(aminoacids_end)
-        writefile.write("\n \n The helix sequence: \n")
-        writefile.write(helix_sequence)
-        writefile.write("\n \n The sheet sequence: \n")
-        writefile.write(sheet_sequence)
+        writefile.write(aminoacids_end + "\n \n")
+        writefile.write("The helix sequence: \n")
+        writefile.write(helix_sequence + "\n \n")
+        writefile.write("The sheet sequence: \n")
+        writefile.write(sheet_sequence + "\n \n")
 
         #write the compared files to file to compare them easily
-        writefile.write("\n \n the files compared below eachother: \n")
+        writefile.write("the files compared below eachother: \n")
         writefile.write(endresult_compared_list)
+
+
 
 def main():
     # get the given arguments
@@ -242,8 +274,8 @@ def main():
     aminoacid_weight = calculate_aminoacid_weight(amino_acid_string)
     helix_sequence, sheet_sequence = get_helix_sheet_strings(amino_acid_string, list_lines)
     endresult_compared_list = compare_files(comparison_lines, aminoacids_end)
-    hydrophilicity_results = calculate_hydrophilicity(aminoacids_end, sheet_sequence, helix_sequence)
-    write_results(output_name, total_weight, aminoacid_weight, aminoacids_end, sheet_sequence, helix_sequence, endresult_compared_list)
+    hydro_results_list = calculate_hydrophilicity(aminoacids_end, sheet_sequence, helix_sequence)
+    write_results(output_name, total_weight, aminoacid_weight, aminoacids_end, sheet_sequence, helix_sequence, endresult_compared_list, hydro_results_list)
     print("information and results were logged in ", output_name)
 
 if __name__ == "__main__":
