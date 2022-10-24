@@ -32,27 +32,14 @@ amino_acids_weight_dict = {
 }
 
 hydro_dict = {
-"I" :	4.5,
-"V" :	4.2,
-"L" :	3.8,
-"F" :	2.8,
-"C" :	2.5,
-"M" :	1.9,
-"A" :	1.8,
-"G" :	-0.4,
-"T" :	-0.7,
-"S" :	-0.8,
-"W" : 	-0.9,
-"Y" :	-1.3,
-"P" :	-1.6,
-"H" :	-3.2,
-"E" :	-3.5,
-"Q" :	-3.5,
-"D" :	-3.5,
-"N" :	-3.5,
-"K" :	-3.9,
-"R" :	-4.5,
-"*" :   -0.49 #average of all aminoacids
+"I" :	4.5, "V" :	4.2, "L" :	3.8,
+"F" :	2.8, "C" :	2.5, "M" :	1.9,
+"A" :	1.8, "G" :	-0.4, "T" :	-0.7,
+"S" :	-0.8, "W" : -0.9, "Y" :	-1.3,
+"P" :	-1.6, "H" :	-3.2, "E" :	-3.5,
+"Q" :	-3.5, "D" :	-3.5, "N" :	-3.5,
+"K" :	-3.9, "R" :	-4.5, "*" :   -0.49 
+# * is average of all aminoacids
 }
 
 def open_file(input_name, comparison_name):
@@ -145,6 +132,8 @@ def compare_files(comparison_lines, aminoacids_end):
     comparison_string = ""
     rownumber1 = 0
     rownumber = 0
+    checklist_amino = []
+    checklist_amino_1 = []
 
     #remove newlines from fasta sequence, check if its not header, turn it into string to prevent issues with length
     for lines in comparison_lines:
@@ -155,6 +144,7 @@ def compare_files(comparison_lines, aminoacids_end):
     #devide in rows of 70 for neat comparison
     for rows in range(0, len(comparison_string), 70):
         comparison_list.append("Fasta sequence line: " + str(rownumber)+ " :"+ comparison_string[rows: rows + 70])
+        checklist_amino.append(comparison_string[rows: rows + 70])
         rownumber += 1
 
     #remove newlines from pdb sequence
@@ -162,6 +152,7 @@ def compare_files(comparison_lines, aminoacids_end):
 
     for rows in range(0, len(aminoacids_string), 70):
         aminoacids_list.append("PDB sequence   line: " + str(rownumber1)+ " :"+ aminoacids_string[rows: rows + 70])
+        checklist_amino_1.append(aminoacids_string[rows: rows + 70])
         rownumber1 += 1
 
     #check which list is shortest to prevent index errors
@@ -180,6 +171,9 @@ def compare_files(comparison_lines, aminoacids_end):
     #save the formatted lines to a list
     for linecount in range(length_list):
         endresult_compared_list += (comparison_list[linecount]+ "\n"+ aminoacids_list[linecount]+ "\n \n")
+        #check if there are differences
+        if not checklist_amino[linecount] == checklist_amino_1[linecount]:
+            print("difference in line", linecount)
 
     return endresult_compared_list
     
