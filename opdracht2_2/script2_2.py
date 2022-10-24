@@ -262,6 +262,7 @@ def main():
         # get the argument and set the variable
         output_name = arguments[3]
     
+    #good luck!
     list_lines, comparison_lines = open_file(input_name, comparison_name)
     total_weight = calculate_weight(list_lines)
     aminoacids_end, amino_acid_string  = amino_acids(list_lines)
@@ -269,7 +270,9 @@ def main():
     helix_sequence, sheet_sequence = get_helix_sheet_strings(amino_acid_string, list_lines)
     endresult_compared_list = compare_files(comparison_lines, aminoacids_end)
     hydro_results_list = calculate_hydrophilicity(aminoacids_end, sheet_sequence, helix_sequence)
+    
     write_results(output_name, total_weight, aminoacid_weight, aminoacids_end, sheet_sequence, helix_sequence, endresult_compared_list, hydro_results_list)
+    
     print("information and results were logged in ", output_name)
 
 if __name__ == "__main__":

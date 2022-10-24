@@ -2,7 +2,7 @@ import sys
 
 
 def open_file(input_name, comparison_name):
-        # read input file
+        # reads input file
     with open(input_name, "r") as file:
         # set file lines to variable
         file_content = list(file.readlines())
@@ -10,6 +10,7 @@ def open_file(input_name, comparison_name):
 
 
 def extract_file_data(file_content):
+    #predefined variableee
     extracted_data = ""
     line_index = 0
     mrna_location = 0
