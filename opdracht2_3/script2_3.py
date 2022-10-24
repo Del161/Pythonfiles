@@ -16,6 +16,7 @@ def extract_file_data(file_content):
     mRNA_location = 0
     mRNA_info = []
     clean_content = []
+    positions = ""
 
     for lines in file_content:
         clean_content.append(lines.strip())
@@ -24,14 +25,17 @@ def extract_file_data(file_content):
         if lines.startswith("mRNA"):
            mrna_location = line_index
            for lines in clean_content[line_index: len(file_content)]:
-                print(lines)
-                if not lines.startswith("/"):
-                    mRNA_info.append(lines)
-                else: break
-                    
+                if lines.startswith("/"):
+                    break
+                else:
+                    mRNA_info.append(lines) 
         else: line_index += 1
+    line_index = 0
 
-    print(mRNA_info)
+    positions = "".join(mRNA_info)
+    positions = positions.replace(",","..").replace("<","..").replace(">","").split("..")
+    positions.pop(0)
+    print(positions)
 
     return extracted_data
 
