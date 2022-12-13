@@ -48,13 +48,12 @@ def barchart_creator(values_headers, user_choice):
     :param user_choice: integer with user choice
     :return: a barchart
     """
-    labels = values_headers[0]
+    values = values_headers[0]
     tick_labels = []
     tick_values = []
-    headers = values_headers[1]
 
-    for individual_labels in labels:
-        individual_values = labels[individual_labels]
+    for individual_labels in values:
+        individual_values = values[individual_labels]
         tick_values.append(int(individual_values[int(user_choice)]))
         tick_labels.append(individual_labels)
 
@@ -68,11 +67,37 @@ def barchart_creator(values_headers, user_choice):
     plt.show()
 
 
+def boxplot(values_headers):
+    """
+    Creates a boxplot from the given values
+    """
+    categories = {}
+    values = values_headers[0]
+    headers1 = values_headers[1]
+    tick_values = []
+    data = []
+
+    for count in range(len(headers1[1:])):
+        for individual_labels in values:
+            individual_values = values[individual_labels]
+            tick_values.append(int(individual_values[int(count)]))
+        data.append(tick_values)
+
+        tick_values = []
+
+
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_axes([0.15, 0.15, 0.85, 0.85])
+    ax.set_xticklabels(headers1[1:])
+    fig.autofmt_xdate()
+    bp = ax.boxplot(data)
+    plt.show()
+
 def main():
     """
     one who rules
     """
-    print("you aren't supposed to run this")
+    print("bargraphcreator.py main")
 
 
 # to protect against problems when imported
