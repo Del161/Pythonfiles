@@ -28,5 +28,6 @@ def main():
     elif arguments[2] == "boxplot":
         gc.boxplot(file_values_header)
 
+# to protect against problems if imported
 if __name__ == "__main__":
     main()

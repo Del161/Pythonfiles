@@ -116,7 +116,6 @@ def boxplot(values_headers):
     ax = fig.add_axes([0.15, 0.15, 0.85, 0.85])
     ax.set_xticklabels(x_labels)
     plt.setp(ax.get_xticklabels(), rotation=10, horizontalalignment='right')
-
     bp = ax.boxplot(plot_data)
     plt.show()
 
