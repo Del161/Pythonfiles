@@ -70,6 +70,7 @@ def barchart_creator(values_headers, user_choice):
 def boxplot(values_headers):
     """
     Creates a boxplot from the given values
+    param: values_headers, a tuple of 2 lists
     """
 
     # predefined variables
@@ -82,6 +83,7 @@ def boxplot(values_headers):
     counter = 0
     user_choice = ""
     x_labels = []
+    hv_choice = True
 
     for headers in headers1[1:]:
         headers_numerated.append(str(counter) + " : " + headers + "\n")
@@ -89,7 +91,8 @@ def boxplot(values_headers):
 
     if len(headers1) > 2:
         print("There are multiple values, please select the ones you want to use for the bar chart\n"
-              "the input method is 1,2,3,4 etc or 1,4,6 etc, use * for all categories \n",
+              "the input method is 1,2,3,4 etc or 1,4,6 etc, use * for all categories \n"
+              "Add a capital H to make the plot horizontal example: 0,1,H \n",
               *headers_numerated)
         user_choice = input("please enter the values of the wanted categories: ")
 
@@ -102,11 +105,16 @@ def boxplot(values_headers):
         tick_values = []
 
     # act upon user choice
-    if user_choice == "*":
+    # cheeck if the user wants the graph horizontal
+    user_choice = user_choice.split(",")
+    if user_choice[-1] == "H":
+        user_choice.pop(-1)
+        hv_choice = False
+
+    if user_choice[0] == "*":
         plot_data = data
         x_labels = headers1[1:]
     else:
-        user_choice = user_choice.split(",")
         for numbers in user_choice:
             plot_data.append(data[int(numbers)])
             x_labels.append(headers1[int(numbers)+1])
@@ -116,7 +124,7 @@ def boxplot(values_headers):
     ax = fig.add_axes([0.15, 0.15, 0.85, 0.85])
     ax.set_xticklabels(x_labels)
     plt.setp(ax.get_xticklabels(), rotation=10, horizontalalignment='right')
-    bp = ax.boxplot(plot_data)
+    bp = ax.boxplot(plot_data, vert=hv_choice)
     plt.show()
 
 def main():
