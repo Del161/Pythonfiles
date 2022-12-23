@@ -22,7 +22,7 @@ Usage
 To use this project you need to use commandline first
 an example is: python3 module.py ./Datasets/top50ffc.csv boxplot y_ax,x_ax,title
 you can also use barchart instead of boxplot
-if you dont want a particular axis or title, you can replace it with a * (example: y_ax,*,*)
+if you don't want a particular axis or title, you can replace it with a * (example: y_ax,*,*)
 you can also use other .csv data giles instead of the ./Datasets/top50ffx.csv by replacing it with the wanted path
 there might be further input moments in the terminal depending on input, such as what parts of the dataset to use and if its horizontal or vertical
 

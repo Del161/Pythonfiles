@@ -73,15 +73,14 @@ def barchart_creator(values_headers, user_choice, marked_labels):
     ax.set_xlabel(marked_labels[1])
 
     if hv_choice == "H":
-        # stuff to make the barchart horizontal
+        # stuff to make the barchart horizontal if the user wishes so
 
         y_pos = np.arange(len(x_axis))
         ax.barh(x_axis, height, align='center')
         ax.set_yticks(y_pos, labels=x_axis)
         ax.invert_yaxis()  # labels read top-to-bottom
-
-
     else:
+        # else just make it vertical
         fig.autofmt_xdate()
         ax.bar(x_axis, height)
 
@@ -160,9 +159,8 @@ def plot_data_bx(plot_data, x_labels, hv_choice, marked_labels):
     param: hv_choice bool
     """
 
-    # plot the boxplot with all the data
-    fig = plt.figure(figsize=(10, 7))
-    ax = fig.add_axes([0.10, 0.15, 0.90, 0.85])
+    # define fig and ax
+    fig, ax = plt.subplots()
 
     # if the user wants verticals, make labels xaxis, else yaxis
     if hv_choice:

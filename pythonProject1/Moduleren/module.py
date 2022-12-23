@@ -8,7 +8,7 @@ Date:6-12-22
 """
 
 import csvreader as csv
-import graphcreator as gc
+from graphcreator import barchart, boxplot
 import sys
 
 def main():
@@ -30,9 +30,9 @@ def main():
     # extract the header and values from the csv file
     file_values_header = csv.xdata_extractor(filename)
     if arguments[2] == "barchart":
-        gc.barchart(file_values_header, user_labels)
+        barchart(file_values_header, user_labels)
     elif arguments[2] == "boxplot":
-        gc.boxplot(file_values_header, user_labels)
+        boxplot(file_values_header, user_labels)
 
 # to protect against problems if imported
 if __name__ == "__main__":
