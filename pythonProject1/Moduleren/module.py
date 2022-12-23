@@ -13,7 +13,7 @@ import sys
 
 def main():
     """
-    Where all is ran in order
+    Where all functions are run in order
     """
     # predefined variables
     user_labels = []
