@@ -1,7 +1,8 @@
 """
 Graph creator program
-commandline arguments order: python3 module.py filename.csv wanted_graph
-Wanted graph can be: "bar_chart"
+commandline arguments order: python3 module.py filename.csv wanted_graph ylabel,xlabel,title
+Wanted graph can be: "bar_chart", "boxplot"
+ylabel xlabel and title can be left empty
 Author: Delshad Vegter
 Date:6-12-22
 """
@@ -14,6 +15,9 @@ def main():
     """
     Where all is ran in order
     """
+    # predefined variables
+    user_labels = []
+
     # assign the commandline arguments, and check if there are enough
     arguments = sys.argv
     if len(arguments) > 1:
@@ -21,12 +25,14 @@ def main():
     else:
         raise Exception("too few arguments given")
 
+    if len(arguments) > 3: user_labels = arguments[3]
+
     # extract the header and values from the csv file
     file_values_header = csv.xdata_extractor(filename)
     if arguments[2] == "barchart":
-        gc.barchart(file_values_header)
+        gc.barchart(file_values_header, user_labels)
     elif arguments[2] == "boxplot":
-        gc.boxplot(file_values_header)
+        gc.boxplot(file_values_header, user_labels)
 
 # to protect against problems if imported
 if __name__ == "__main__":

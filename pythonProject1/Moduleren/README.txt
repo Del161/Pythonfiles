@@ -10,6 +10,7 @@ Modulation plotting test
 
 Description
 This project can create bargraphs or boxplots with a variety of different settings.
+Only files with numerical data values work
 
 
 Installation
@@ -24,3 +25,4 @@ you can also use barchart instead of boxplot
 you can also use other .csv data giles instead of the ./Datasets/top50ffx.csv by replacing it with the wanted path
 there might be further input moments in the terminal depending on input, such as what parts of the dataset to use and if its horizontal or vertical
 
+ps (not recommended to use this with too large datasets, the names will overlap, and it might become unreadable)
