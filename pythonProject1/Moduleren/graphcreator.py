@@ -5,6 +5,7 @@ date: 6-12-22
 """
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def barchart(values_headers, user_labels):
@@ -37,7 +38,7 @@ def category_chooser(values_headers):
     if len(header) > 2:
         print("There are multiple values, please select the one you want to use for the bar chart\n",
               *headers_numerated)
-        user_choice = input("please enter the value of the wanted category: ")
+        user_choice = input("please enter the value of the wanted category add an ,H to make the graph horizontal: ")
 
     return user_choice
 
@@ -52,23 +53,40 @@ def barchart_creator(values_headers, user_choice, marked_labels):
     values = values_headers[0]
     tick_labels = []
     tick_values = []
+    hv_choice = ""
+
+    user_choice = user_choice.split(",")
+    if len(user_choice) > 1:
+        hv_choice = user_choice.pop(-1)
 
     for individual_labels in values:
         individual_values = values[individual_labels]
-        tick_values.append(int(individual_values[int(user_choice)]))
+        tick_values.append(int(individual_values[int(user_choice[0])]))
         tick_labels.append(individual_labels)
 
     x_axis = tick_labels
     height = tick_values
 
-    fig = plt.figure()
-    ax = fig.add_axes([0.15, 0.15, 0.85, 0.85])
-    fig.autofmt_xdate()
-    ax.bar(x_axis, height)
-    ax.set_title(marked_labels[2])
+    fig, ax = plt.subplots()
+    plt.title(marked_labels[2])
     ax.set_ylabel(marked_labels[0])
     ax.set_xlabel(marked_labels[1])
+
+    if hv_choice == "H":
+        # stuff to make the barchart horizontal
+
+        y_pos = np.arange(len(x_axis))
+        ax.barh(x_axis, height, align='center')
+        ax.set_yticks(y_pos, labels=x_axis)
+        ax.invert_yaxis()  # labels read top-to-bottom
+
+
+    else:
+        fig.autofmt_xdate()
+        ax.bar(x_axis, height)
+
     plt.show()
+
 
 def boxplot(values_headers, user_labels):
     """
@@ -129,9 +147,10 @@ def make_lists(values_headers):
     else:
         for numbers in user_choice:
             plot_data.append(data[int(numbers)])
-            x_labels.append(headers1[int(numbers)+1])
+            x_labels.append(headers1[int(numbers) + 1])
 
     return plot_data, x_labels, hv_choice
+
 
 def plot_data_bx(plot_data, x_labels, hv_choice, marked_labels):
     """
@@ -160,8 +179,12 @@ def plot_data_bx(plot_data, x_labels, hv_choice, marked_labels):
     bp = ax.boxplot(plot_data, vert=hv_choice)
     plt.show()
 
+
 def set_labels(user_labels):
-    """creates the labels in plots"""
+    """
+    creates the labels in plots
+    param: user_labels string
+    """
 
     labels = []
 
@@ -170,8 +193,18 @@ def set_labels(user_labels):
     ylabel = labels[0]
     xlabel = labels[1]
     title = labels[2]
-    marked_labels = [ylabel,xlabel,title]
+
+    # make them empty if the user wants nothing there
+    if ylabel == "*":
+        ylabel = ""
+    if xlabel == "*":
+        xlabel = ""
+    if title == "*":
+        title = ""
+
+    marked_labels = [ylabel, xlabel, title]
     return marked_labels
+
 
 def main():
     """

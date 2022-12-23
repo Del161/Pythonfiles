@@ -2,7 +2,7 @@
 Graph creator program
 commandline arguments order: python3 module.py filename.csv wanted_graph ylabel,xlabel,title
 Wanted graph can be: "bar_chart", "boxplot"
-ylabel xlabel and title can be left empty
+ylabel xlabel and title can be replaced with an * to be left empty
 Author: Delshad Vegter
 Date:6-12-22
 """
