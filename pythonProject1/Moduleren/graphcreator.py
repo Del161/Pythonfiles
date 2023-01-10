@@ -206,7 +206,7 @@ def set_labels(user_labels):
 
 def main():
     """
-    one who rules
+    its main, what'd ya expect
     """
     print("graphcreator.py main")
 
